@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>YT MP3 AND MP4 CC PROJECTS API</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .watermark {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        #watermark {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        #watermark:hover {
+            text-decoration: underline;
+        }
+        .documentation {
+            margin-top: 50px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">YouTube Downloader API</h1>
+        <form id="downloadForm">
+            <div class="form-group">
+                <input type="url" id="videoUrl" class="form-control" placeholder="Enter YouTube video URL" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Download MP3</button>
+        </form>
+        <div id="response" class="mt-4"></div>
+    </div>
+    <div class="watermark">
+        <a href="https://example.com" id="watermark">API BY: Jonell Magallanes</a>
+    </div>
+    <div class="container documentation">
+        <h2>API Documentation</h2>
+        <h5>Audio Download (MP3):</h5>
+        <p><strong>GET /ytaudio?url=YOUR_YOUTUBE_URL</strong></p>
+        <h5>Video Download (MP4):</h5>
+        <p><strong>GET /ytvideo?url=YOUR_YOUTUBE_URL</strong></p>
+        <h5>Parameters:</h5>
+        <ul>
+            <li><strong>url:</strong> The YouTube video URL you want to download.</li>
+        </ul>
+        <h5>Audio Response:</h5>
+        <pre>{
+  "download": "http://${host}/file?src=video_id.mp3",
+  "title": "Video Title",
+  "requestCount": request_count,
+  "requests": {
+    "request_id": {
+      "ip": "client_ip",
+      "url": "youtube_url",
+      "status": "completed/in-progress"
+    }
+  }
+}</pre>
+        <h5>Video Response:</h5>
+        <pre>{
+  "download": "http://${host}/file?src=video_id.mp4",
+  "title": "Video Title",
+  "requestCount": request_count,
+  "requests": {
+    "request_id": {
+      "ip": "client_ip",
+      "url": "youtube_url",
+      "status": "completed/in-progress"
+    }
+  }
+}</pre>
+        <h5>Example:</h5>
+        <pre>GET /ytaudio?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ</pre>
+        <pre>GET /ytvideo?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ</pre>
+    </div>
+    <script>
+        document.getElementById('downloadForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const url = document.getElementById('videoUrl').value;
+            fetch(`/ytaudio?url=${encodeURIComponent(url)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.download) {
+                        document.getElementById('response').innerHTML = `
+                            <div class="alert alert-success">
+                                Download Link: <a href="${data.download}" id="downloadLink">${data.download}</a>
+                                <button class="btn btn-outline-secondary btn-sm" id="copyButton">Copy Link</button>
+                            </div>`;
+
+                        document.getElementById('copyButton').addEventListener('click', function () {
+                            const downloadLink = document.getElementById('downloadLink').href;
+                            navigator.clipboard.writeText(downloadLink).then(() => {
+                                alert('Download link copied to clipboard!');
+                            });
+                        });
+                    } else {
+                        document.getElementById('response').innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                    }
+                });
+        });
+
+        document.getElementById('watermark').addEventListener('click', function () {
+            window.location.href = 'https://www.facebook.com/propertynilove.magallnes';
+        });
+    </script>
+</body>
+</html>
